@@ -22,6 +22,7 @@
         transition: 0.3s;
         width: 20%;
         border-radius: 5px;
+        margin: 40px 20px;
       }
 
       .card:hover {
@@ -36,8 +37,9 @@
         padding: 2px 16px;
       }
 
-      .list {
-        display: inline-block;
+      #list {
+        display: inline-flex;  
+        width: 100%;
       }
     </style>
   </head>
@@ -134,6 +136,7 @@
         let formData = new FormData(form);
         // output as an object
         let data = Object.fromEntries(formData);
+        console.log(data);
         let question = {};
         question.description = data.description;
         question.choices = [data.optionA, data.optionB, data.optionC];
@@ -160,9 +163,11 @@
           headers: {
             "Content-Type": "application/json",
           },
-          body: question,
+          body: JSON.stringify(question),
         };
+        try {
         let response = await fetch(host + "/questions", request);
+        console.log(response);
         if (response.status == 200) {
           let result = await submitTheImage(question.id, imageFile);
           if (result) {
@@ -176,8 +181,11 @@
           message = "Something went wrong! Question data could not be saved.";
         }
         alert(message);
+        } catch (error) {
+          alert("The following error occurred: \n" + error);
+        }
       }
-
+    
       async function submitTheImage(id, imageFile) {
         let formData = new FormData();
         formData.append("file", imageFile);
